@@ -35,7 +35,7 @@ class ActorCritic:
         with tf.variable_scope('pi'):
             self.pi_tf = self.max_u * tf.tanh(nn(
                 input_pi, goal_pi, [self.hidden] * self.layers + [self.dimu],
-                [self.hidden] * self.layers + [(self.hidden + self.dimu) * 3 * 2]))
+                [self.hidden] * self.layers + [(self.hidden*3*2 + self.dimu*2)]))
         with tf.variable_scope('Q'):
             # for policy training
             input_Q = tf.concat(axis=1, values=[o, g, self.pi_tf / self.max_u])
