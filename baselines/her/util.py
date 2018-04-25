@@ -54,20 +54,21 @@ def flatten_grads(var_list, grads):
                       for (v, grad) in zip(var_list, grads)], 0)
 
 
-def nn(input, goal, layers_sizes, film_layer_sizes, reuse=None, flatten=False, name=""):
+def nn(input, goal, layers_sizes, film_layer_sizes=None, reuse=None, flatten=False, name=""):
     """Creates a simple neural network
     """
-    for i, size in enumerate(film_layer_sizes):
-        activation = tf.nn.relu if i < len(film_layer_sizes)-1 else None
-        goal = tf.layers.dense(inputs=goal,
-                               units=size,
-                               kernel_initializer=tf.contrib.layers.xavier_initializer(),
-                               reuse=reuse,
-                               name='film_'+name+'_'+str(i))
-        if activation:
-            goal = activation(goal)
+    if film_layer_sizes:
+        for i, size in enumerate(film_layer_sizes):
+            activation = tf.nn.relu if i < len(film_layer_sizes)-1 else None
+            goal = tf.layers.dense(inputs=goal,
+                                   units=size,
+                                   kernel_initializer=tf.contrib.layers.xavier_initializer(),
+                                   reuse=reuse,
+                                   name='film_'+name+'_'+str(i))
+            if activation:
+                goal = activation(goal)
 
-    goals = tf.split(goal, [x * 2 for x in layers_sizes], axis=1)
+        goals = tf.split(goal, [x * 2 for x in layers_sizes], axis=1)
 
     for i, size in enumerate(layers_sizes):
         activation = tf.nn.relu if i < len(layers_sizes)-1 else None
@@ -76,8 +77,9 @@ def nn(input, goal, layers_sizes, film_layer_sizes, reuse=None, flatten=False, n
                                 kernel_initializer=tf.contrib.layers.xavier_initializer(),
                                 reuse=reuse,
                                 name=name+'_'+str(i))
-        gammas, betas = tf.split(goals[i], 2, axis=1)
-        input = gammas * input + betas
+        if film_layer_sizes:
+            gammas, betas = tf.split(goals[i], 2, axis=1)
+            input = gammas * input + betas
         if activation:
             input = activation(input)
 
