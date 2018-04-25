@@ -67,7 +67,7 @@ def nn(input, goal, layers_sizes, film_layer_sizes, reuse=None, flatten=False, n
         if activation:
             goal = activation(goal)
 
-    goals = tf.split(goal, layers_sizes, axis=1)
+    goals = tf.split(goal, [x * 2 for x in layers_sizes], axis=1)
 
     for i, size in enumerate(layers_sizes):
         activation = tf.nn.relu if i < len(layers_sizes)-1 else None
