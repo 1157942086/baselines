@@ -76,7 +76,7 @@ def nn(input, goal, layers_sizes, film_layer_sizes, reuse=None, flatten=False, n
                                 kernel_initializer=tf.contrib.layers.xavier_initializer(),
                                 reuse=reuse,
                                 name=name+'_'+str(i))
-        gammas, betas = goals[i].split(2, axis=1)
+        gammas, betas = tf.split(goals[i], 2, axis=1)
         input = gammas * input + betas
         if activation:
             input = activation(input)
