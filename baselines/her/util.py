@@ -54,7 +54,7 @@ def flatten_grads(var_list, grads):
                       for (v, grad) in zip(var_list, grads)], 0)
 
 
-def nn(input, goal, layers_sizes, film_layer_sizes=None, reuse=None, flatten=False, name=""):
+def nn(input, layers_sizes, goal=None, film_layer_sizes=None, reuse=None, flatten=False, name=""):
     """Creates a simple neural network
     """
     if film_layer_sizes:

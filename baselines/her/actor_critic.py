@@ -34,7 +34,7 @@ class ActorCritic:
         # Networks.
         with tf.variable_scope('pi'):
             self.pi_tf = self.max_u * tf.tanh(nn(
-                input_pi, goal_pi, [self.hidden] * self.layers + [self.dimu],
+                input_pi, [self.hidden] * self.layers + [self.dimu], goal_pi,
                 [self.hidden] * self.layers + [(self.hidden*3*2 + self.dimu*2)]))
         with tf.variable_scope('Q'):
             # for policy training
