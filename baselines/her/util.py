@@ -57,6 +57,7 @@ def flatten_grads(var_list, grads):
 def nn(input, layers_sizes, goal=None, film_layer_sizes=None, reuse=None, flatten=False, name=""):
     """Creates a simple neural network
     """
+    epsilon = 1e-3
     if film_layer_sizes:
         for i, size in enumerate(film_layer_sizes):
             activation = tf.nn.relu if i < len(film_layer_sizes)-1 else None
@@ -78,6 +79,8 @@ def nn(input, layers_sizes, goal=None, film_layer_sizes=None, reuse=None, flatte
                                 reuse=reuse,
                                 name=name+'_'+str(i))
         if film_layer_sizes:
+            batch_mean, batch_variance = tf.nn.moments(input, [0])
+            input = (input - batch_mean) / tf.sqrt(batch_variance + epsilon)
             gammas, betas = tf.split(goals[i], 2, axis=1)
             input = gammas * input + betas
         if activation:
